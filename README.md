@@ -13,4 +13,22 @@ When users export their data from ChatGPT, the provided JSON structure can be a 
 
 ```bash
 $ ./gptgrep.py path_to_your_data_export.zip "Your target message here"
+```
 
+## Features
+
+- Case-insensitive search within messages.
+- Outputs the titles of all chats that contain the target message.
+- Easy extraction from the exported `.zip` without needing manual unzipping.
+  
+## Dependencies
+
+- Python 3
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Ensure to update tests as appropriate.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
