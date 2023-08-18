@@ -1,6 +1,6 @@
 # chatgpt-grep
 
-A utility script to search for specific messages within a ChatGPT data export and retrieve the titles of chats containing those messages.
+A utility script to search for specific messages within a ChatGPT data export and retrieve the titles of chats, and URLs linking back to conversations containing those messages.
 
 ## Background
 
@@ -18,7 +18,7 @@ $ ./gptgrep.py path_to_your_data_export.zip "Your target message here"
 ## Features
 
 - Case-insensitive search within messages.
-- Outputs the titles of all chats that contain the target message.
+- Outputs the titles and URL links back to all chats that contain the target message.
 - Easy extraction from the exported `.zip` without needing manual unzipping.
   
 ## Dependencies
