@@ -20,6 +20,15 @@ $ ./gptgrep.py path_to_your_data_export.zip "Your target message here"
 - Case-insensitive search within messages.
 - Outputs the titles and URL links back to all chats that contain the target message.
 - Easy extraction from the exported `.zip` without needing manual unzipping.
+
+## Example
+
+```
+% ./gptgrep.py ~/Downloads/a8d0cee5d7853270947c973b3be9d96370cbe76cfd7e3dc26a2714bbcddca106-2023-08-21-13-36-46.zip "my future self"    
+Chats containing the message 'my future self':
+Title: AI Transforms Mind & Body
+URL: https://chat.openai.com/**************************************
+```
   
 ## Dependencies
 
