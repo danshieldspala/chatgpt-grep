@@ -3,10 +3,9 @@ import sys
 import zipfile
 import json
 from datetime import datetime
+import yaml
 
-BASE_URL = "https://chat.openai.com/c/"
-
-def find_chat_titles_and_urls_by_message(search_term, data):
+def find_chat_titles_and_dates_by_message(search_term, data):
     matches = []
     for chat in data:
         title = chat.get('title', '')
@@ -20,23 +19,28 @@ def find_chat_titles_and_urls_by_message(search_term, data):
             parts = message_content.get('parts', [])
             message_text = " ".join(part for part in parts).lower()
             if search_term.lower() in message_text:
-                matches.append((formatted_time, title, BASE_URL + message_id))
+                match = {
+                    'date': formatted_time,
+                    'title': title
+                }
+                matches.append(match)
                 break
-    matches.sort(reverse=True, key=lambda x: x[0])  # Sort by timestamp
+    matches.sort(reverse=True, key=lambda x: x['date'])  # Sort by timestamp
     return matches
 
 def main(zip_filepath, search_term):
     with zipfile.ZipFile(zip_filepath, 'r') as z:
         with z.open('conversations.json') as f:
             data = json.load(f)
-    matches = find_chat_titles_and_urls_by_message(search_term, data)
-    for match in matches:
-        print(f"{match[0]} - {match[1]} - {match[2]}")
+    matches = find_chat_titles_and_dates_by_message(search_term, data)
+    yaml_output = {
+        search_term: matches
+    }
+    print(yaml.dump(yaml_output, default_flow_style=False))
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Usage: python script_name.py path_to_export.zip search_term")
     else:
         main(sys.argv[1], sys.argv[2])
-
 

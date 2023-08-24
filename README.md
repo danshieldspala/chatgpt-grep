@@ -25,9 +25,11 @@ $ ./gptgrep.py path_to_your_data_export.zip "Your target message here"
 
 ```
 % ./gptgrep.py ~/Downloads/a8d0cee5d7853270947c973b3be9d96370cbe76cfd7e3dc26a2714bbcddca106-2023-08-21-13-36-46.zip "my future self"    
-Chats containing the message 'my future self':
-Title: AI Transforms Mind & Body
-URL: https://chat.openai.com/**************************************
+chatgpt-grep:
+- date: August 22, 2023 15:52:21
+  title: ChatGPT Grep
+- date: August 21, 2023 09:51:02
+  title: Create Pull Request from Cloned Repo
 ```
   
 ## Dependencies
