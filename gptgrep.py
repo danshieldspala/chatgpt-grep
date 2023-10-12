@@ -20,7 +20,8 @@ def find_chat_titles_and_dates_by_message(search_term, data):
             message_text = ""
             for part in parts:
                 if isinstance(part, dict):
-                    print(f"Found a dict in parts: {part}")
+                    if part.get('content_type') == 'image_asset_pointer':
+                        continue # Skip image entries
                     message_text += part.get('text', '')
                 else:
                     message_text += part
