@@ -17,7 +17,14 @@ def find_chat_titles_and_dates_by_message(search_term, data):
                 continue
             message_content = message_details.get('content', {})
             parts = message_content.get('parts', [])
-            message_text = " ".join(part for part in parts).lower()
+            message_text = ""
+            for part in parts:
+                if isinstance(part, dict):
+                    print(f"Found a dict in parts: {part}")
+                    message_text += part.get('text', '')
+                else:
+                    message_text += part
+            message_text = message_text.lower()
             if search_term.lower() in message_text:
                 match = {
                     'date': formatted_time,
@@ -39,8 +46,7 @@ def main(zip_filepath, search_term):
     print(yaml.dump(yaml_output, default_flow_style=False))
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python script_name.py path_to_export.zip search_term")
+    if len(sys.argv) < 2:
+        print("Usage: gptgrep.py path_to_export.zip search_term")
     else:
         main(sys.argv[1], sys.argv[2])
-
