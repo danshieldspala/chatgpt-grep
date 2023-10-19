@@ -18,7 +18,7 @@ $ ./gptgrep.py path_to_your_data_export.zip "Your target message here"
 ## Features
 
 - Case-insensitive search within messages.
-- Outputs the titles and URL links back to all chats that contain the target message.
+- Outputs the titles and conversation date for all chats that contain the target message.
 - Easy extraction from the exported `.zip` without needing manual unzipping.
 
 ## Example
