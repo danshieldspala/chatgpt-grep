@@ -37,14 +37,17 @@ def find_chat_titles_and_dates_by_message(search_term, data):
     return matches
 
 def main(zip_filepath, search_term):
-    with zipfile.ZipFile(zip_filepath, 'r') as z:
-        with z.open('conversations.json') as f:
-            data = json.load(f)
-    matches = find_chat_titles_and_dates_by_message(search_term, data)
-    yaml_output = {
-        search_term: matches
-    }
-    print(yaml.dump(yaml_output, default_flow_style=False))
+    try:
+        with zipfile.ZipFile(zip_filepath, 'r') as z:
+            with z.open('conversations.json') as f:
+                data = json.load(f)
+        matches = find_chat_titles_and_dates_by_message(search_term, data)
+        yaml_output = {
+            search_term: matches
+        }
+        print(yaml.dump(yaml_output, default_flow_style=False))
+    except FileNotFoundError:
+        print(f"Error: The specified file '{zip_filepath}' for the path_to_export.zip argument could not be found.")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
