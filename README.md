@@ -20,6 +20,17 @@ $ ./gptgrep.py path_to_your_data_export.zip "Your target message here"
 - Case-insensitive search within messages.
 - Outputs the titles and URL links back to all chats that contain the target message.
 - Easy extraction from the exported `.zip` without needing manual unzipping.
+
+## Example
+
+```
+% ./gptgrep.py ~/Downloads/a8d0cee5d7853270947c973b3be9d96370cbe76cfd7e3dc26a2714bbcddca106-2023-08-21-13-36-46.zip "my future self"    
+chatgpt-grep:
+- date: August 22, 2023 15:52:21
+  title: ChatGPT Grep
+- date: August 21, 2023 09:51:02
+  title: Create Pull Request from Cloned Repo
+```
   
 ## Dependencies
 
@@ -32,3 +43,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+

@@ -1,52 +1,56 @@
 #!/usr/bin/python3
-import json
-import zipfile
-import os
 import sys
+import zipfile
+import json
+from datetime import datetime
+import yaml
 
-def extract_file_from_zip(zip_path, file_name):
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        temp_dir = os.path.join(os.path.dirname(zip_path), 'temp_extract')
-        os.makedirs(temp_dir, exist_ok=True)
-        extracted_file_path = os.path.join(temp_dir, file_name)
-        zip_ref.extract(file_name, temp_dir)
-    return extracted_file_path
-
-def find_chat_titles_and_urls_by_message(target_message, chats_data):
-    target_message_lower = target_message.lower()
-    matched_chats = []
-
-    for chat in chats_data:
+def find_chat_titles_and_dates_by_message(search_term, data):
+    matches = []
+    for chat in data:
+        title = chat.get('title', '')
+        update_time = chat.get('update_time', None)
+        formatted_time = datetime.fromtimestamp(update_time).strftime('%B %d, %Y %H:%M:%S') if update_time else "Unknown time"
         for message_id, message_data in chat.get('mapping', {}).items():
-            message_content = message_data.get('message', {}).get('content', {}) if message_data.get('message') else {}
+            message_details = message_data.get('message', {})
+            if not message_details:  # Skip if message details is None or empty
+                continue
+            message_content = message_details.get('content', {})
             parts = message_content.get('parts', [])
-            message_text = " ".join(part for part in parts).lower()
-            if target_message_lower in message_text:
-                conversation_id = chat.get('id', 'unknown_id')
-                title = chat.get('title', 'unknown_title')
-                url = f"https://chat.openai.com/c/{conversation_id}"
-                matched_chats.append({'title': title, 'url': url})
+            message_text = ""
+            for part in parts:
+                if isinstance(part, dict):
+                    if part.get('content_type') == 'image_asset_pointer':
+                        continue # Skip image entries
+                    message_text += part.get('text', '')
+                else:
+                    message_text += part
+            message_text = message_text.lower()
+            if search_term.lower() in message_text:
+                match = {
+                    'date': formatted_time,
+                    'title': title
+                }
+                matches.append(match)
                 break
+    matches.sort(reverse=True, key=lambda x: x['date'])  # Sort by timestamp
+    return matches
 
-    return matched_chats
-
-def main(zip_file, message_to_search):
-    extracted_file = extract_file_from_zip(zip_file, 'conversations.json')
-
-    with open(extracted_file, 'r') as file:
-        data = json.load(file)
-
-    matches = find_chat_titles_and_urls_by_message(message_to_search, data)
-
-    os.remove(extracted_file)
-    os.rmdir(os.path.dirname(extracted_file))
-
-    if matches:
-        print(f"Chats containing the message '{message_to_search}':")
-        for match in matches:
-            print(f"Title: {match['title']}\nURL: {match['url']}\n")
-    else:
-        print("Message not found in any chat.")
+def main(zip_filepath, search_term):
+    try:
+        with zipfile.ZipFile(zip_filepath, 'r') as z:
+            with z.open('conversations.json') as f:
+                data = json.load(f)
+        matches = find_chat_titles_and_dates_by_message(search_term, data)
+        yaml_output = {
+            search_term: matches
+        }
+        print(yaml.dump(yaml_output, default_flow_style=False))
+    except FileNotFoundError:
+        print(f"Error: The specified file '{zip_filepath}' for the path_to_export.zip argument could not be found.")
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    if len(sys.argv) < 2:
+        print("Usage: gptgrep.py path_to_export.zip search_term")
+    else:
+        main(sys.argv[1], sys.argv[2])
