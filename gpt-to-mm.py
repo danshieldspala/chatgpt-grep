@@ -13,7 +13,7 @@ def find_chat_titles_and_dates_by_message(search_term, data):
         formatted_time = int(update_time * 1000) if update_time else "Unknown time"
         conversation_elements = []
 
-        for message_id, message_data in chat.get('mapping', {}).items():
+        for _, message_data in chat.get('mapping', {}).items():
             message_details = message_data.get('message', {})
             if not message_details:  # Skip if message details are None or empty
                 continue
@@ -68,10 +68,10 @@ def main(zip_filepath, search_term):
         mm_xml = tostring(mm_structure, encoding="utf-8").decode()
         print(mm_xml)
     except FileNotFoundError:
-        print(f"Error: The specified file '{zip_filepath}' for the path_to_export.zip argument could not be found.")
+        sys.stderr.write(f"Error: The specified file '{zip_filepath}' for the path_to_export.zip argument could not be found.")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: gptgrep.py path_to_export.zip search_term")
+        sys.stderr.write("Usage: gptgrep.py path_to_export.zip search_term")
     else:
         main(sys.argv[1], sys.argv[2])
